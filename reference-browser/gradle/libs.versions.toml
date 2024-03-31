@@ -1,0 +1,111 @@
+[versions]
+
+# Android Components
+android-components = "126.0.20240330211126"
+
+# AGP
+android-plugin = "8.3.1"
+
+#Kotlin
+gleanGradlePlugin = "58.1.0"
+kotlinx-coroutines = "1.8.0"
+kotlin-compiler = "1.9.22"
+
+#Google
+compose-compiler = "1.5.11"
+leakcanaryAndroid = "2.13"
+material = "1.9.0"
+
+#AndroidX
+activity-compose = "1.7.2"
+appcompat = "1.6.1"
+composeBom = "2024.03.00"
+constraintlayout = "2.1.4"
+core = "1.12.0"
+lifecycle = "2.7.0"
+navigationSafeArgsGradlePlugin = "2.7.7"
+ossLicensesPlugin = "0.10.6"
+preference = "1.2.1"
+swiperefreshlayout = "1.1.0"
+work = "2.9.0"
+
+#AndroidX Testing
+androidx-core = "1.5.0"
+androidx-espresso = "3.5.1"
+androidx-ext-junit = "1.1.5"
+androidx-orchestrator = "1.4.2"
+androidx-runner = "1.5.2"
+androidx-uiautomator = "2.3.0"
+
+#Third Party
+sentry = "7.5.0"
+
+# Third Party Linting & Static Code Analysis
+detekt = "1.23.5"
+pinterest-ktlint = "0.50.0"
+
+#Third Party Testing
+jacoco = "0.8.11"
+mockwebserver = "4.12.0"
+benchmarkMacroJunit4 = "1.2.3"
+org-jetbrains-kotlin-android = "1.9.0"
+
+[libraries]
+
+# AGP
+androidx-navigation-safe-args-gradle-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigationSafeArgsGradlePlugin" }
+glean-gradle-plugin = { module = "org.mozilla.telemetry:glean-gradle-plugin", version.ref = "gleanGradlePlugin" }
+leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
+oss-licenses-plugin = { module = "com.google.android.gms:oss-licenses-plugin", version.ref = "ossLicensesPlugin" }
+tools-android-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-plugin" }
+
+# Kotlin
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-compiler" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+
+#Google
+google-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+# AndroidX
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "lifecycle" }
+androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preference" }
+androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
+androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
+
+# AndroidX Compose
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-ui-base = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+androidx-compose-material = { group = "androidx.compose.material", name = "material" }
+
+# AndroidX Testing
+espresso-contrib = { group = "androidx.test.espresso", name = "espresso-contrib", version.ref = "androidx-espresso" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-espresso" }
+espresso-idling-resources = { group = "androidx.test.espresso", name = "espresso-idling-resource", version.ref = "androidx-espresso" }
+espresso-web = { group = "androidx.test.espresso", name = "espresso-web", version.ref = "androidx-espresso" }
+junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidx-ext-junit" }
+orchestrator = { group = "androidx.test", name = "orchestrator", version.ref = "androidx-orchestrator" }
+tools-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidx-core" }
+tools-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx-runner" }
+uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "androidx-uiautomator" }
+
+# Third Party
+thirdparty-sentry = { group = "io.sentry", name = "sentry-android", version.ref = "sentry" }
+
+# Third Party Linting & Static Code Analysis
+ktlint = { module = "com.pinterest:ktlint", version.ref = "pinterest-ktlint" }
+
+# Third Party Testing
+mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "mockwebserver" }
+
+# Android Components
+androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmarkMacroJunit4" }
+
+[plugins]
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+org-jetbrains-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "org-jetbrains-kotlin-android" }
