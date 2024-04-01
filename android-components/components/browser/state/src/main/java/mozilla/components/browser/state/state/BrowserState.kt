@@ -11,6 +11,8 @@ import mozilla.components.concept.awesomebar.AwesomeBar
 import mozilla.components.lib.state.State
 import java.util.Locale
 
+private const val MAX_RECENT_TABS_COUNT = 10
+
 /**
  * Value type that represents the complete state of the browser/engine.
  *
@@ -40,6 +42,7 @@ import java.util.Locale
 data class BrowserState(
     val tabs: List<TabSessionState> = emptyList(),
     val tabPartitions: Map<String, TabPartition> = emptyMap(),
+    val lastSelectedTabsInMemory: BoundedUniqueList<String> = BoundedUniqueList(MAX_RECENT_TABS_COUNT),
     val customTabs: List<CustomTabSessionState> = emptyList(),
     val closedTabs: List<TabState> = emptyList(),
     val selectedTabId: String? = null,

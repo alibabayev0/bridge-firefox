@@ -37,6 +37,8 @@ internal object TabListReducer {
                     state.tabs + action.tab
                 }
 
+                state.lastSelectedTabsInMemory.add(action.tab.id)?.let(state.tabs::resetEngineState)
+
                 state.copy(
                     tabs = updatedTabList,
                     selectedTabId = if (action.select || state.selectedTabId == null) {
@@ -84,6 +86,7 @@ internal object TabListReducer {
             }
 
             is TabListAction.SelectTabAction -> {
+                state.lastSelectedTabsInMemory.add(action.tabId)?.let(state.tabs::resetEngineState)
                 state.copy(selectedTabId = action.tabId)
             }
 

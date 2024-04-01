@@ -61,6 +61,10 @@ open class BaseDomainAutocompleteProvider(
         }
     }
 
+    fun clearDomains() {
+        domains = emptyList()
+    }
+
     /**
      * Computes an autocomplete suggestion for the given text, and invokes the
      * provided callback, passing the result.

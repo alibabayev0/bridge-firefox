@@ -58,12 +58,17 @@ object Domains {
 
     private fun loadDomainsForLanguage(context: Context, domains: MutableSet<String>, country: String) {
         val assetManager = context.assets
-        val languageDomains = try {
-            assetManager.open("domains/$country").bufferedReader().readLines()
+        try {
+            assetManager.open("domains/$country").bufferedReader().useLines { lines ->
+                lines.forEach { line ->
+                    if (line.isNotEmpty()) {
+                        domains.add(line)
+                    }
+                }
+            }
         } catch (e: IOException) {
             emptyList<String>()
         }
-        domains.addAll(languageDomains)
     }
 
     private fun getCountriesInDefaultLocaleList(): Set<String> {

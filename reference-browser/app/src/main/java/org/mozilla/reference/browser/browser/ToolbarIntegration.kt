@@ -194,7 +194,11 @@ class ToolbarIntegration(
         }
 
         toolbar.display.setUrlBackground(
-            ResourcesCompat.getDrawable(context.resources, R.drawable.url_background, context.theme),
+            ResourcesCompat.getDrawable(
+                context.resources,
+                R.drawable.url_background,
+                context.theme
+            ),
         )
 
         scope.launch {
@@ -226,6 +230,7 @@ class ToolbarIntegration(
     }
 
     override fun stop() {
+        shippedDomainsProvider.clearDomains()
         toolbarFeature.stop()
     }
 

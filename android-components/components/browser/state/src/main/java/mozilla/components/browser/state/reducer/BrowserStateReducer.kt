@@ -36,6 +36,7 @@ import mozilla.components.browser.state.action.UndoAction
 import mozilla.components.browser.state.action.WebExtensionAction
 import mozilla.components.browser.state.state.BrowserState
 import mozilla.components.browser.state.state.CustomTabSessionState
+import mozilla.components.browser.state.state.EngineState
 import mozilla.components.browser.state.state.SessionState
 import mozilla.components.browser.state.state.TabSessionState
 import mozilla.components.browser.state.store.BrowserStore
@@ -158,4 +159,21 @@ internal fun <T : SessionState> List<T>.updateTabs(
     if (tabIndex == -1) return null
 
     return subList(0, tabIndex) + update(get(tabIndex)) + subList(tabIndex + 1, size)
+}
+
+/**
+ * Finds the corresponding TabSessionState in the list by ID and resets its engineState.
+ * @param tabId ID of the tab to change.
+ * @return A new list with the updated TabSessionState or null if the tab is not found.
+ */
+internal fun List<TabSessionState>.resetEngineState(
+    tabId: String,
+): List<TabSessionState>? {
+    val tabIndex = indexOfFirst { it.id == tabId }
+
+    if (tabIndex == -1) return null
+
+    val updatedTab = get(tabIndex).copy(engineState = EngineState())
+
+    return subList(0, tabIndex) + updatedTab + subList(tabIndex + 1, size)
 }

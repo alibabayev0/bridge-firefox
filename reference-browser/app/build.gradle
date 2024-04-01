@@ -100,6 +100,12 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
+            debuggable true
+            javaCompileOptions {
+                annotationProcessorOptions {
+                    arguments = ["android.enableResourceInspection": "true"]
+                }
+            }
         }
         raptor releaseTemplate >> { // the ">>" concatenates the raptor-specific options with the template
             applicationIdSuffix ".raptor"
