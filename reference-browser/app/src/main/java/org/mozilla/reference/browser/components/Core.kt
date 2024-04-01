@@ -80,7 +80,7 @@ class Core(private val context: Context) {
                 false,
             ),
         )
-        EngineProvider.createEngine(context, defaultSettings)
+        EngineProvider.createEngine(context, defaultSettings).also { e -> e.warmUp() }
     }
 
     /**

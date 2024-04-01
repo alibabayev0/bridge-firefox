@@ -45,8 +45,6 @@ open class BrowserApplication : Application() {
             return
         }
 
-        components.core.engine.warmUp()
-
         restoreBrowserState()
 
         GlobalAddonDependencyProvider.initialize(
