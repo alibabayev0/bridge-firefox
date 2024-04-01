@@ -18,21 +18,26 @@ import org.mozilla.reference.browser.ext.isCrashReportActive
 
 object EngineProvider {
 
+    @Volatile
     private var runtime: GeckoRuntime? = null
 
     @Synchronized
     fun getOrCreateRuntime(context: Context): GeckoRuntime {
         if (runtime == null) {
-            val builder = GeckoRuntimeSettings.Builder()
+            synchronized(this) {
+                if (runtime == null) {
+                    val builder = GeckoRuntimeSettings.Builder()
 
-            if (isCrashReportActive) {
-                builder.crashHandler(CrashHandlerService::class.java)
+                    if (isCrashReportActive) {
+                        builder.crashHandler(CrashHandlerService::class.java)
+                    }
+
+                    // About config it's no longer enabled by default
+                    builder.aboutConfigEnabled(true)
+                    builder.extensionsWebAPIEnabled(true)
+                    runtime = GeckoRuntime.create(context, builder.build())
+                }
             }
-
-            // About config it's no longer enabled by default
-            builder.aboutConfigEnabled(true)
-            builder.extensionsWebAPIEnabled(true)
-            runtime = GeckoRuntime.create(context, builder.build())
         }
 
         return runtime!!
