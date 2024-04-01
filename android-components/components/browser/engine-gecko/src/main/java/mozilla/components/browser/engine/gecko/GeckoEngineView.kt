@@ -95,7 +95,9 @@ class GeckoEngineView @JvmOverloads constructor(
     override var selectionActionDelegate: SelectionActionDelegate? = null
 
     init {
-        addView(geckoView)
+        post {
+            addView(geckoView)
+        }
 
         /**
          * With the current design, we have a [NestedGeckoView] inside this

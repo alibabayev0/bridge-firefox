@@ -57,6 +57,19 @@ open class BrowserActivity : AppCompatActivity() {
     open fun createBrowserFragment(sessionId: String?): Fragment =
         BrowserFragment.create(sessionId)
 
+    /**
+     * AsyncLayoutInflater could be used here for initializing view on another thread, but it depends on App logic changes.
+     * Example Usage:
+     *  AsyncLayoutInflater(this).inflate(R.layout.activity_main, null) { view, _, _ ->
+     *      setContentView(view)
+     *      if (savedInstanceState == null) {
+     *          supportFragmentManager.beginTransaction().apply {
+     *              replace(R.id.container, createBrowserFragment(sessionId))
+     *              commit()
+     *          }
+     *      }
+     *
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

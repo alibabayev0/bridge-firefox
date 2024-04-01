@@ -176,7 +176,9 @@ class GeckoEngine(
      */
     override fun createView(context: Context, attrs: AttributeSet?): EngineView {
         return GeckoEngineView(context, attrs).apply {
-            setColorScheme(settings.preferredColorScheme)
+            post {
+                setColorScheme(settings.preferredColorScheme)
+            }
         }
     }
 
