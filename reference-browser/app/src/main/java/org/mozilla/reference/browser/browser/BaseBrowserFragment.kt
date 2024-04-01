@@ -62,30 +62,29 @@ import mozilla.components.ui.widgets.behavior.ViewPosition as MozacToolbarBehavi
  */
 @Suppress("TooManyFunctions")
 abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, ActivityResultHandler {
-    private val sessionFeature = ViewBoundFeatureWrapper<SessionFeature>()
-    private val toolbarIntegration = ViewBoundFeatureWrapper<ToolbarIntegration>()
-    private val contextMenuIntegration = ViewBoundFeatureWrapper<ContextMenuIntegration>()
-    private val downloadsFeature = ViewBoundFeatureWrapper<DownloadsFeature>()
-    private val shareDownloadsFeature = ViewBoundFeatureWrapper<ShareDownloadFeature>()
-    private val appLinksFeature = ViewBoundFeatureWrapper<AppLinksFeature>()
-    private val promptsFeature = ViewBoundFeatureWrapper<PromptFeature>()
-    private val webExtensionPromptFeature = ViewBoundFeatureWrapper<WebExtensionPromptFeature>()
-    private val fullScreenFeature = ViewBoundFeatureWrapper<FullScreenFeature>()
-    private val findInPageIntegration = ViewBoundFeatureWrapper<FindInPageIntegration>()
-    private val sitePermissionFeature = ViewBoundFeatureWrapper<SitePermissionsFeature>()
-    private val pictureInPictureIntegration = ViewBoundFeatureWrapper<PictureInPictureIntegration>()
-    private val swipeRefreshFeature = ViewBoundFeatureWrapper<SwipeRefreshFeature>()
-    private val windowFeature = ViewBoundFeatureWrapper<WindowFeature>()
-    private val webAuthnFeature = ViewBoundFeatureWrapper<WebAuthnFeature>()
+    private val sessionFeature by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<SessionFeature>() }
+    private val toolbarIntegration by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<ToolbarIntegration>() }
+    private val contextMenuIntegration by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<ContextMenuIntegration>() }
+    private val downloadsFeature by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<DownloadsFeature>() }
+    private val shareDownloadsFeature by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<ShareDownloadFeature>() }
+    private val appLinksFeature by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<AppLinksFeature>() }
+    private val promptsFeature by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<PromptFeature>() }
+    private val webExtensionPromptFeature by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<WebExtensionPromptFeature>() }
+    private val fullScreenFeature by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<FullScreenFeature>() }
+    private val findInPageIntegration by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<FindInPageIntegration>() }
+    private val sitePermissionFeature by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<SitePermissionsFeature>() }
+    private val pictureInPictureIntegration by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<PictureInPictureIntegration>() }
+    private val swipeRefreshFeature by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<SwipeRefreshFeature>() }
+    private val windowFeature by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<WindowFeature>() }
+    private val webAuthnFeature by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<WebAuthnFeature>() }
 
-    private val engineView: EngineView
-        get() = requireView().findViewById<View>(R.id.engineView) as EngineView
-    private val toolbar: BrowserToolbar
-        get() = requireView().findViewById(R.id.toolbar)
-    private val findInPageBar: FindInPageBar
-        get() = requireView().findViewById(R.id.findInPageBar)
-    private val swipeRefresh: SwipeRefreshLayout
-        get() = requireView().findViewById(R.id.swipeRefresh)
+    private val engineView by lazy(LazyThreadSafetyMode.PUBLICATION) { requireView().findViewById<View>(R.id.engineView) as EngineView }
+    private val toolbar by lazy(LazyThreadSafetyMode.PUBLICATION) { requireView().findViewById<BrowserToolbar>(R.id.toolbar) as BrowserToolbar }
+    private val findInPageBar by lazy(LazyThreadSafetyMode.PUBLICATION) { requireView().findViewById<FindInPageBar>(R.id.findInPageBar) as FindInPageBar }
+    private val swipeRefresh by lazy(LazyThreadSafetyMode.PUBLICATION) { requireView().findViewById<SwipeRefreshLayout>(R.id.swipeRefresh) as SwipeRefreshLayout }
+    private val composeView by lazy(LazyThreadSafetyMode.PUBLICATION) { requireView().findViewById<ComposeView>(R.id.compose_view) as ComposeView }
+
+    private val prefs by lazy(LazyThreadSafetyMode.PUBLICATION) { PreferenceManager.getDefaultSharedPreferences(requireContext()) }
 
     private val backButtonHandler: List<ViewBoundFeatureWrapper<*>> = listOf(
         fullScreenFeature,
@@ -99,8 +98,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         promptsFeature,
     )
 
-    protected val sessionId: String?
-        get() = arguments?.getString(SESSION_ID)
+    protected val sessionId: String? by lazy(LazyThreadSafetyMode.PUBLICATION) { arguments?.getString(SESSION_ID) }
 
     protected var webAppToolbarShouldBeVisible = true
 
@@ -108,9 +106,7 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View {
-        return inflater.inflate(R.layout.fragment_browser, container, false)
-    }
+    ): View = inflater.inflate(R.layout.fragment_browser, container, false)
 
     abstract val shouldUseComposeUI: Boolean
 
@@ -205,7 +201,10 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
                 sessionId = sessionId,
                 fragmentManager = parentFragmentManager,
                 launchInApp = {
-                    prefs.getBoolean(requireContext().getPreferenceKey(R.string.pref_key_launch_external_app), false)
+                    prefs.getBoolean(
+                        requireContext().getPreferenceKey(R.string.pref_key_launch_external_app),
+                        false
+                    )
                 },
             ),
             owner = this,
@@ -241,7 +240,10 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Activit
         )
 
         windowFeature.set(
-            feature = WindowFeature(requireComponents.core.store, requireComponents.useCases.tabsUseCases),
+            feature = WindowFeature(
+                requireComponents.core.store,
+                requireComponents.useCases.tabsUseCases
+            ),
             owner = this,
             view = view,
         )

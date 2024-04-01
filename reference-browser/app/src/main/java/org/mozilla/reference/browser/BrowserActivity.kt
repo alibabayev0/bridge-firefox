@@ -35,9 +35,6 @@ import org.mozilla.reference.browser.ext.isCrashReportActive
  * Activity that holds the [BrowserFragment].
  */
 open class BrowserActivity : AppCompatActivity() {
-
-    private lateinit var crashIntegration: CrashIntegration
-
     private val sessionId: String?
         get() = SafeIntent(intent).getStringExtra(EXTRA_SESSION_ID)
 
@@ -46,6 +43,12 @@ open class BrowserActivity : AppCompatActivity() {
 
     private val webExtensionPopupObserver by lazy {
         WebExtensionPopupObserver(components.core.store, ::openPopup)
+    }
+
+    private val crashIntegration: CrashIntegration by lazy {
+        CrashIntegration(this, components.analytics.crashReporter) { crash ->
+            onNonFatalCrash(crash)
+        }
     }
 
     /**
@@ -58,8 +61,6 @@ open class BrowserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        components.notificationsDelegate.bindToActivity(this)
-
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().apply {
                 replace(R.id.container, createBrowserFragment(sessionId))
@@ -67,29 +68,26 @@ open class BrowserActivity : AppCompatActivity() {
             }
         }
 
-        if (isCrashReportActive) {
-            crashIntegration = CrashIntegration(this, components.analytics.crashReporter) { crash ->
-                onNonFatalCrash(crash)
-            }
-            lifecycle.addObserver(crashIntegration)
-        }
-
-        NotificationManager.checkAndNotifyPolicy(this)
-        lifecycle.addObserver(webExtensionPopupObserver)
+        components.notificationsDelegate.bindToActivity(this)
     }
 
-    override fun onBackPressed() {
-        supportFragmentManager.fragments.forEach {
-            if (it is UserInteractionHandler && it.onBackPressed()) {
-                return
-            }
-        }
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        if (isCrashReportActive) lifecycle.addObserver(crashIntegration)
+        lifecycle.addObserver(webExtensionPopupObserver)
 
-        super.onBackPressedDispatcher.onBackPressed()
+        NotificationManager.checkAndNotifyPolicy(this)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        supportFragmentManager.fragments.find { it is UserInteractionHandler && it.onBackPressed() }
+            ?: super.onBackPressedDispatcher.onBackPressed()
 
         removeSessionIfNeeded()
     }
 
+    @Deprecated("Deprecated in Java")
     @Suppress("DEPRECATION") // ComponentActivity wants us to use registerForActivityResult
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Logger.info(
@@ -138,20 +136,16 @@ open class BrowserActivity : AppCompatActivity() {
     }
 
     override fun onUserLeaveHint() {
-        supportFragmentManager.fragments.forEach {
-            if (it is UserInteractionHandler && it.onHomePressed()) {
-                return
-            }
-        }
-
-        super.onUserLeaveHint()
+        supportFragmentManager.fragments.find { it is UserInteractionHandler && it.onHomePressed() }
+            ?: super.onUserLeaveHint()
     }
 
-    override fun onCreateView(parent: View?, name: String, context: Context, attrs: AttributeSet): View? =
-        when (name) {
+    override fun onCreateView(parent: View?, name: String, context: Context, attrs: AttributeSet): View? {
+        return when (name) {
             EngineView::class.java.name -> components.core.engine.createView(context, attrs).asView()
             else -> super.onCreateView(parent, name, context, attrs)
         }
+    }
 
     private fun onNonFatalCrash(crash: Crash) {
         Snackbar.make(findViewById(android.R.id.content), R.string.crash_report_non_fatal_message, LENGTH_LONG)

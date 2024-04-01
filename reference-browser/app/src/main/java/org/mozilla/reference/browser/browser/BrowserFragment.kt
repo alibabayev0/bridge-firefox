@@ -29,20 +29,15 @@ import org.mozilla.reference.browser.tabs.TabsTrayFragment
  * Fragment used for browsing the web within the main app.
  */
 class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler {
-    private val thumbnailsFeature = ViewBoundFeatureWrapper<BrowserThumbnails>()
-    private val readerViewFeature = ViewBoundFeatureWrapper<ReaderViewIntegration>()
-    private val webExtToolbarFeature = ViewBoundFeatureWrapper<WebExtensionToolbarFeature>()
+    private val thumbnailsFeature by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<BrowserThumbnails>() }
+    private val readerViewFeature by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<ReaderViewIntegration>() }
+    private val webExtToolbarFeature by lazy(LazyThreadSafetyMode.PUBLICATION) { ViewBoundFeatureWrapper<WebExtensionToolbarFeature>() }
 
-    private val awesomeBar: AwesomeBarWrapper
-        get() = requireView().findViewById(R.id.awesomeBar)
-    private val toolbar: BrowserToolbar
-        get() = requireView().findViewById(R.id.toolbar)
-    private val engineView: EngineView
-        get() = requireView().findViewById<View>(R.id.engineView) as EngineView
-    private val readerViewBar: ReaderViewControlsBar
-        get() = requireView().findViewById(R.id.readerViewBar)
-    private val readerViewAppearanceButton: FloatingActionButton
-        get() = requireView().findViewById(R.id.readerViewAppearanceButton)
+    private val awesomeBar: AwesomeBarWrapper by lazy(LazyThreadSafetyMode.PUBLICATION) { requireView().findViewById(R.id.awesomeBar) }
+    private val toolbar: BrowserToolbar by lazy(LazyThreadSafetyMode.PUBLICATION) { requireView().findViewById(R.id.toolbar) }
+    private val engineView: EngineView by lazy(LazyThreadSafetyMode.PUBLICATION) { requireView().findViewById<View>(R.id.engineView) as EngineView }
+    private val readerViewBar: ReaderViewControlsBar by lazy(LazyThreadSafetyMode.PUBLICATION) { requireView().findViewById(R.id.readerViewBar) }
+    private val readerViewAppearanceButton: FloatingActionButton by lazy(LazyThreadSafetyMode.PUBLICATION) {  requireView().findViewById(R.id.readerViewAppearanceButton) }
 
     override val shouldUseComposeUI: Boolean
         get() = PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean(
